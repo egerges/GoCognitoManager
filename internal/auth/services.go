@@ -6,6 +6,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
+	"github.com/aws/aws-sdk-go/aws"
 
 	"github.com/egerges/GoCognitoManager/internal/error"
 	"github.com/egerges/GoCognitoManager/internal/flconfig"
@@ -21,11 +23,15 @@ func NewService() (Service, *error.GoCognitoManagerError) {
 
 	// Log when configurations are successfully loaded
 	log.Println("Configurations loaded from .env file successfully.")
+	log.Println("--------------------------------------------------")
+	log.Println("Values:")
 	// Print Cognito values
 	log.Printf("Cognito Region: %s", cfg.Cognito.Region)
 	log.Printf("Cognito ClientID: %s", cfg.Cognito.ClientID)
 	log.Printf("Cognito ClientSecret: %s", cfg.Cognito.ClientSecret)
 	log.Printf("Cognito UserPoolID: %s", cfg.Cognito.UserPoolID)
+
+	log.Printf("--------------------------------------------------\n\n")
 
 	// Load Cognito config
 	cognitoCfg, awsError := config.LoadDefaultConfig(context.TODO(), config.WithRegion(cfg.Cognito.Region))
@@ -43,10 +49,41 @@ func NewService() (Service, *error.GoCognitoManagerError) {
 	}, nil
 }
 
-// ChangePassword implements Service.
-func (s *service) ChangePassword(params *ChangePasswordParam) (*ChangePasswordRes, *error.GoCognitoManagerError) {
-	log.Printf("ChangePassword called with params: %+v", params)
-	return nil, nil
+// SignUp implements Service.
+func (s *service) SignUp(params *SignUpParam) (*SignUpRes, *error.GoCognitoManagerError) {
+	log.Printf("SignUp called with params: %+v", params)
+	secretHash := calculateSecretHash(s.cognitoManager.Cognito.ClientID, s.cognitoManager.Cognito.ClientSecret, params.Email)
+	input := &cognitoidentityprovider.SignUpInput{
+		ClientId:   aws.String(s.cognitoManager.Cognito.ClientID),
+		Username:   aws.String(params.Email),
+		Password:   aws.String(params.Password),
+		SecretHash: aws.String(secretHash),
+		UserAttributes: []types.AttributeType{
+			{
+				Name:  aws.String("email"),
+				Value: aws.String(params.Email),
+			},
+			{
+				Name:  aws.String("phone"),
+				Value: aws.String(params.Password),
+			},
+		},
+	}
+
+	output, err := s.cognitoClient.SignUp(context.TODO(), input)
+	if err != nil {
+		log.Fatalln("Error signing up user:", err)
+		return nil, &error.GoCognitoManagerError{Status: true, Description: "Failed to sign up user: " + err.Error()}
+	}
+
+	// Extract Cognito User ID
+	cognitoUserID := *output.UserSub
+
+	return &SignUpRes{
+		Success:       true,
+		Error:         nil,
+		CognitoUserID: cognitoUserID,
+	}, nil
 }
 
 // ConfirmEmail implements Service.
@@ -73,14 +110,14 @@ func (s *service) SignOut(params *SignOutParam) (*SignOutRes, *error.GoCognitoMa
 	return nil, nil
 }
 
-// SignUp implements Service.
-func (s *service) SignUp(params *SignUpParam) (*SignUpRes, *error.GoCognitoManagerError) {
-	log.Printf("SignUp called with params: %+v", params)
-	return nil, nil
-}
-
 // ValidateToken implements Service.
 func (s *service) ValidateToken(params *ValidateTokenParam) (*ValidateTokenRes, *error.GoCognitoManagerError) {
 	log.Printf("ValidateToken called with params: %+v", params)
+	return nil, nil
+}
+
+// ChangePassword implements Service.
+func (s *service) ChangePassword(params *ChangePasswordParam) (*ChangePasswordRes, *error.GoCognitoManagerError) {
+	log.Printf("ChangePassword called with params: %+v", params)
 	return nil, nil
 }

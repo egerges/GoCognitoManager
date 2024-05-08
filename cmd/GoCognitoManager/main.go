@@ -36,7 +36,7 @@ func testSignUp(service auth.Service) {
 		return
 	}
 
-	log.Printf("SignUp successful. Response: %+v", res)
+	log.Printf("SignUp successful. Response: %+v\n\n", res)
 }
 
 func testSignIn(service auth.Service) {
@@ -51,7 +51,7 @@ func testSignIn(service auth.Service) {
 		return
 	}
 
-	log.Printf("SignIn successful. Response: %+v", res)
+	log.Printf("SignIn successful. Response: %+v\n\n", res)
 }
 
 func testSignOut(service auth.Service) {
@@ -65,7 +65,7 @@ func testSignOut(service auth.Service) {
 		return
 	}
 
-	log.Printf("SignOut successful. Response: %+v", res)
+	log.Printf("SignOut successful. Response: %+v\n\n", res)
 }
 
 func testConfirmOTP(service auth.Service) {
@@ -80,7 +80,7 @@ func testConfirmOTP(service auth.Service) {
 		return
 	}
 
-	log.Printf("ConfirmOTP successful. Response: %+v", res)
+	log.Printf("ConfirmOTP successful. Response: %+v\n\n", res)
 }
 
 func testConfirmEmail(service auth.Service) {
@@ -95,7 +95,7 @@ func testConfirmEmail(service auth.Service) {
 		return
 	}
 
-	log.Printf("ConfirmEmail successful. Response: %+v", res)
+	log.Printf("ConfirmEmail successful. Response: %+v\n\n", res)
 }
 
 func testChangePassword(service auth.Service) {
@@ -111,7 +111,7 @@ func testChangePassword(service auth.Service) {
 		return
 	}
 
-	log.Printf("ChangePassword successful. Response: %+v", res)
+	log.Printf("ChangePassword successful. Response: %+v\n\n", res)
 }
 
 func testValidateToken(service auth.Service) {
@@ -125,5 +125,5 @@ func testValidateToken(service auth.Service) {
 		return
 	}
 
-	log.Printf("ValidateToken successful. Response: %+v", res)
+	log.Printf("ValidateToken successful. Response: %+v\n\n", res)
 }
