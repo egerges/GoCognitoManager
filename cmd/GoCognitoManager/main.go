@@ -13,13 +13,13 @@ func main() {
 		log.Fatalf("Error loading configuration: %v", err.Description)
 	}
 
-	log.Println("Configs loaded successfully.")
+	log.Printf("Configs loaded successfully.\n\n")
 
 	// If config loaded successfully, print Cognito values
 	log.Printf("Cognito Region: %s", cfg.Cognito.Region)
 	log.Printf("Cognito ClientID: %s", cfg.Cognito.ClientID)
 	log.Printf("Cognito ClientSecret: %s", cfg.Cognito.ClientSecret)
-	log.Printf("Cognito UserPoolID: %s", cfg.Cognito.UserPoolID)
+	log.Printf("Cognito UserPoolID: %s\n\n", cfg.Cognito.UserPoolID)
 
-	log.Println("Starting service:")
+	log.Printf("Starting service:\n")
 }

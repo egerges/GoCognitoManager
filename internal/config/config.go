@@ -8,14 +8,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func LoadConfig() (*Config, *error.GoCognitoManagerError) {
+func LoadConfig() (*ConfigManager, *error.GoCognitoManagerError) {
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 		return nil, &error.GoCognitoManagerError{Status: true, Description: "Failed to load .env file"}
 	}
 
-	config := &Config{}
+	config := &ConfigManager{}
 	if err := OverwriteConfigWithEnv(config); err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func CheckConfigFileExists(filePath string) bool {
 	return true
 }
 
-func OverwriteConfigWithEnv(config *Config) *error.GoCognitoManagerError {
+func OverwriteConfigWithEnv(config *ConfigManager) *error.GoCognitoManagerError {
 	// Define a map of environment variables and corresponding fields in the config struct
 	envVars := map[string]*string{
 		"COGNITO_REGION":        &config.Cognito.Region,
